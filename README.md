@@ -6,14 +6,14 @@ Ella Rajaonson^1^, Gary Tom^1^, Rana Barghout^1^, Michelle Collins^1^, Jia Meng 
 ^1^ University of Toronto
 ^2^ Vector Institute
 
-##Summary Sentence
+## Summary Sentence
 Our hierarchical approach predicts high-dimensional RATA odor profiles by first training a dilution-aware GNN with a multi-component structural loss, then using its learned embeddings with XGBoost to model complex mixtures.
 
-##Background/Introduction
+## Background/Introduction
 The prediction of odor perception from molecular structure is a significant challenge in sensory neuroscience, largely underexplored compared to other sensory modalities. While recent advances like the Principal Odor Map (POM) have established the utility of Graph Neural Networks (GNNs) for learning single-molecule representations [1], real-world olfaction involves complexities of dilution and multi-component mixtures. These phenomena introduce non-linear perceptual effects that are not captured by simple linear models.
 Our motivation is to extend the representational capacity of GNNs to these more complex and realistic scenarios. We hypothesized that the perceptual effect of dilution could be modeled by conditioning a molecular embedding, and that dilution-aware embeddings could serve as input features for a low-data mixture prediction task. Our approach introduces two novelties: 1) a context-conditioning mechanism using a FiLM layer to create a Dilution-Aware POM (D-POM), and 2) a custom, multi-component loss function designed to capture both the magnitude and the high-dimensional structure of the sparse RATA perceptual vectors.
 
-##Methods
+## Methods
 ${image?fileName=dream2025%5Foverview%2Epng&align=Center&scale=100&responsive=true&altText=}
 
 Our methodology is a two-stage, hierarchical approach designed to address the specific constraints and objectives of each challenge task. The overall approach first develops a context-aware molecular representation for single molecules (Task 1) and then leverages these representations in a separate, data-efficient model for mixtures (Task 2). All models were implemented using PyTorch, PyTorch Geometric, and Scikit-learn.
@@ -39,7 +39,7 @@ Our methodology is a two-stage, hierarchical approach designed to address the sp
 3.  **Data Augmentation and Modeling:** To maximize the use of available data, we augmented the Task 2 training set with all data from Task 1, treating each single-molecule sample as a "mixture" of one component. The final RATA score predictions were made using an XGBoost regressor [8] trained on the selected, aggregated features. This was chosen for its robustness against overfitting in low-data scenarios and its ability to handle heterogeneous feature sets.
 
 
-##Conclusion/Discussion
+## Conclusion/Discussion
 
 This work introduces a pragmatic, two-stage approach for predicting complex olfactory percepts. Our primary contribution is the development of a Dilution-Aware POM (D-POM) which leverages a FiLM layer for context conditioning and a novel, multi-component loss function to model the high-dimensional, sparse structure of RATA data.
 
@@ -47,7 +47,7 @@ The insight behind our approach was that by decoupling the problem, we could bui
 
 Future work could focus on developing end-to-end mixture models, perhaps by incorporating attention mechanisms as explored in the POMMIX paper, once larger mixture datasets become available. Furthermore, exploring alternative aggregation and feature selection techniques could improve the performance of the mixture prediction model.
 
-##References
+## References
 
 1. Lee, B. K., Mayhew, E. J., Sanchez-Lengeling, B., Wei, J. N., Qian, W. W., Little, K. A., Andres, M., Nguyen, B. B., Moloy, T., Yasonik, J., Parker, J. K., Gerkin, R. C., Mainland, J. D., & Wiltschko, A. B. (2023). A principal odor map unifies diverse tasks in olfactory perception. Science, 381(6661), 999–1006. https://doi.org/10.1126/science.ade4401
 2. Tom, G., Ser, C.T., Rajaonson, E.M., Lo, S., Park, H.S., Lee, B.K., Sanchez-Lengeling, B. (2025). From Molecules to Mixtures: Learning Representations of Olfactory Mixture Similarity using Inductive Biases. arXiv preprint arXiv:2501.16271.
