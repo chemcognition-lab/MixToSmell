@@ -1,0 +1,66 @@
+pom_model:
+
+  # General model params
+  dropout_rate: 0.2
+
+  # Molecule blocks
+  mol_encoder:
+    type: "gnn"
+    output_dim: 32
+    gnn:
+      global_dim: ${pom_model.mol_encoder.output_dim}
+      hidden_dim: 320
+      depth: 4
+
+  # Fraction agg
+  fraction_aggregation:
+    type: "concat"
+    film:
+      activation: "sigmoid"
+      output_dim: ${pom_model.mol_encoder.gnn.global_dim}
+
+  # Prediction head
+  regressor:
+    type: "hurdle"
+    hidden_dim: 100
+    num_layers: 0
+
+    mlp:
+      output_dim: 53
+
+# Loss
+loss_type: "combined_rata"
+loss_args:
+  weight_pi:
+  weight_rata:
+  huber_delta:
+  quantile_tau:
+  initial_alpha:
+  initial_beta:
+  initial_gamma:
+  initial_delta:
+  use_focal: true
+  use_uncertainty: true
+
+# Data
+dataset:
+  name: "training"
+  task: ["Task1", "Task2_single"]
+  featurization: "molecular_graphs"
+
+normalize_rata: true
+
+# Scheduler
+optimizer_type: "adam"
+lr_mol_encoder:
+weight_decay: 0
+
+# Trainer
+seed: 42
+root_dir:
+num_workers: 8
+max_epochs: 2000
+batch_size: 128
+device: "cuda"
+early_stopping: True
+patience: 100

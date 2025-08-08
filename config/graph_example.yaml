@@ -1,0 +1,80 @@
+mixture_model:
+
+  # General model params
+  dropout_rate: 0.0
+  attn_num_heads: 8
+  mol_aggregation: "mean"  # ["mean", "max", "pna", "scaled_pna", "set2set"]
+
+  # Molecule blocks
+  mol_encoder:
+    type: "gnn"  # ["linear", "gnn"]
+    output_dim: 128
+    gnn:
+      global_dim: ${mixture_model.mol_encoder.output_dim}
+      hidden_dim: 50
+      dropout_rate: 0.2
+      depth: 3
+
+  # Fraction agg
+  fraction_aggregation:
+    type: "concat"  # ["concat", "multiply", "film"]
+    film:
+      activation: "sigmoid"  # ["sigmoid", "relu"]
+      output_dim: ${mixture_model.mol_encoder.output_dim}
+
+  # Context agg
+  context_aggregation:
+    type: "concat"  # ["concat", "film"]
+    film:
+      activation: "sigmoid"  # ["sigmoid", "relu"]
+      output_dim: ${mixture_model.mix_encoder.embed_dim}
+
+  # Mixture block
+  mix_encoder:
+    type: "deepset"  # ["self_attn", "deepset"]
+    embed_dim: 128
+    num_layers: 2
+
+    self_attn:
+      add_mlp: False
+
+  # Attention aggregation
+  attn_aggregation:
+    embed_dim: ${mixture_model.mix_encoder.embed_dim}
+  
+  set2set_aggregation:
+    in_channels: ${mixture_model.mix_encoder.embed_dim}
+    processing_steps: 3
+
+  # Prediction head
+  regressor:
+    type: "mlp"  # ["mlp", "physics_based"]
+
+    hidden_dim: 100
+    num_layers: 2
+
+    mlp:
+      output_dim: 51
+
+# Data
+dataset:
+  name: "training"
+  task: ["Task1", "Task2_single", "Task2_mix"]
+  featurization: "molecular_graphs" # ["molecular_graphs", "molt5_embeddings", "rdkit2d_normalized_features"]
+
+# Scheduler
+loss_type: "mse"
+optimizer_type: "adam"
+lr_mol_encoder: 1e-4
+lr_other: 5e-4
+weight_decay: 0
+
+# Trainer
+seed: 42
+root_dir: ../test_dir
+num_workers: 8
+max_epochs: 100
+batch_size: 1024
+device: "cuda"
+early_stopping: True
+patience: 100

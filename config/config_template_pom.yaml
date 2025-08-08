@@ -1,0 +1,52 @@
+pom_model:
+
+  # General model params
+  dropout_rate:
+
+  # Molecule blocks
+  mol_encoder:
+    type: "gnn"
+    output_dim:
+    gnn:
+      global_dim: ${pom_model.mol_encoder.output_dim}
+      hidden_dim:
+      depth:
+
+  # Fraction agg
+  fraction_aggregation:
+    type:
+    film:
+      activation:
+      output_dim: ${pom_model.mol_encoder.gnn.global_dim}
+
+  # Prediction head
+  regressor:
+    type:
+    hidden_dim:
+    num_layers:
+
+    mlp:
+      output_dim:
+
+# Data
+dataset:
+  name:
+  task:
+  featurization:
+
+# Scheduler
+loss_type:
+optimizer_type: "adam"
+lr_mol_encoder:
+lr_other:
+weight_decay: 0
+
+# Trainer
+seed: 42
+root_dir:
+num_workers: 8
+max_epochs: 2000
+batch_size: 1024
+device: "cuda"
+early_stopping: True
+patience: 100

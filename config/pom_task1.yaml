@@ -1,0 +1,64 @@
+pom_model:
+
+  # General model params
+  dropout_rate: 0.2
+
+  # Molecule blocks
+  mol_encoder:
+    type: "gnn"  # ["linear", "gnn"]
+    output_dim: 128
+    pretrained_path: "pom_gslf/best_model_mol_encoder.pt"
+    gnn:
+      global_dim: ${pom_model.mol_encoder.output_dim}
+      hidden_dim: 50
+      depth: 3
+
+  # Fraction agg
+  fraction_aggregation:
+    type: "film"  # ["concat", "multiply", "film"]
+    film:
+      activation: "sigmoid"  # ["sigmoid", "relu"]
+      output_dim: ${pom_model.mol_encoder.output_dim}
+
+  # Context agg
+  # context_aggregation:
+  #   type: "film"  # ["concat", "film"]
+  #   film:
+  #     activation: "sigmoid"  # ["sigmoid", "relu"]
+  #     output_dim: ${pom_model.mix_encoder.embed_dim}
+
+  # Prediction head
+  regressor:
+    type: "mlp"  # ["mlp", "physics_based"]
+
+    hidden_dim: 100
+    num_layers: 1
+
+    mlp:
+      output_dim: 51
+
+# Data
+dataset:
+  name: 'training'
+  task: ["Task1"]
+  # name: "gslf"
+  # task: ["gslf"]
+  featurization: "molecular_graphs" # ["molecular_graphs", "molt5_embeddings", "rdkit2d_normalized_features"]
+
+# Scheduler
+loss_type: "mse"
+optimizer_type: "adam"
+lr_mol_encoder: 1e-4
+lr_other: 5e-4
+weight_decay: 0
+
+# Trainer
+seed: 42
+root_dir: pom_task1_film
+num_workers: 8
+max_epochs: 2000
+batch_size: 128
+device: "cuda"
+early_stopping: True
+early_stopping_minimize: False
+patience: 100

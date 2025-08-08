@@ -1,0 +1,41 @@
+program: hp_search_loss.py
+name:
+method: bayes
+
+metric:
+  goal:
+  name:
+
+parameters:
+
+  loss_args:
+    parameters:
+      initial_alpha:
+        distribution: q_uniform
+        min: 1
+        max: 100
+        q: 5
+      initial_beta:
+        distribution: q_uniform
+        min: 1
+        max: 100
+        q: 5
+      initial_gamma:
+        distribution: q_uniform
+        min: 0
+        max: 5
+        q: 0.1
+      initial_delta:
+        distribution: q_uniform
+        min: 1
+        max: 5
+        q: 0.1
+
+  lr_mol_encoder:
+    values: [8e-5, 5e-5, 1e-5, 1e-4, 5e-4, 8e-4, 1e-3, 5e-3, 1e-2]
+
+command:
+  - ${env}
+  - python
+  - ${program}
+  - "default.yaml"
